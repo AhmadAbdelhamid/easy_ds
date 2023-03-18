@@ -1,17 +1,19 @@
 package org.example.data_structures.dynamic_arrays.int_array;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.Before;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class IntArrayTest {
     
-    IntArrayImpl intArray = new IntArrayImpl(3);
+    IntArrayImpl intArray;
+//    GenericDynamicArray<Integer> intArray;
     
-    @Before
+    @BeforeEach
     public void setUp() {
-    
+        intArray = new IntArrayImpl(3);
+//        intArray = new GenericDynamicArray<Integer>(3);
     }
     
     @Test
@@ -52,6 +54,17 @@ public class IntArrayTest {
         assertEquals(capacity, 6);
     }
     
+    @Test
+    public void test_indexOf_should_return_element_with_given_index() {
+        //arrange
+        intArray.add(0);
+        intArray.add(1);
+        intArray.add(2);
+        //act
+        int element = intArray.indexOf(2);
+        //assert
+        assertEquals(element, 2);
+    }
     
     @Test
     public void test_removeAt_fail_when_index_lowerThan_zero() {
@@ -143,11 +156,74 @@ public class IntArrayTest {
         intArray.add(2);
         intArray.add(3); // should be shifted
         //act
-        boolean isRemoved = intArray.remove(2);
-        int new_shifted_value = intArray.get(2);
+        boolean isRemoved = intArray.remove(0);
+        int new_shifted_value = intArray.get(0);
         //assert
         assertTrue(isRemoved);
-        assertEquals(new_shifted_value, 3);
+        assertEquals(new_shifted_value, 1);
+    }
+    
+    @Test
+    public void test_insert_index_should_insert_at_zero() {
+        //arrange
+        intArray.add(0);
+        intArray.add(1);
+        intArray.add(2);
+        intArray.add(3);
+        intArray.add(4);
+        
+        int insert_index = 0;
+        int inserted_num = 5;
+        
+        //act
+        intArray.insert(insert_index, 5);
+        String expected_arr = "[5, 0, 1, 2, 3, 4]";
+        
+        //assert
+        assertEquals(inserted_num, intArray.get(insert_index));
+        assertEquals(expected_arr, intArray.toString());
+    }
+    
+    @Test
+    public void test_insert_index_should_insert_at_last_index() {
+        //arrange
+        intArray.add(0);
+        intArray.add(1);
+        intArray.add(2);
+        intArray.add(3);
+        intArray.add(4);
+        
+        int insert_index = intArray.size() - 1;
+        int inserted_num = 5;
+        
+        //act
+        intArray.insert(insert_index, 5);
+        String expected_arr = "[0, 1, 2, 3, 5, 4]";
+        
+        //assert
+        assertEquals(inserted_num, intArray.get(insert_index));
+        assertEquals(expected_arr, intArray.toString());
+    }
+    
+    @Test
+    public void test_insert_index_should_insert_and_shift_elements() {
+        //arrange
+        intArray.add(0);
+        intArray.add(1);
+        intArray.add(2);
+        intArray.add(3);
+        intArray.add(4);
+        
+        int insert_index = 2;
+        int inserted_num = 5;
+        
+        //act
+        intArray.insert(insert_index, 5);
+        String expected_arr = "[0, 1, 5, 2, 3, 4]";
+        
+        //assert
+        assertEquals(inserted_num, intArray.get(insert_index));
+        assertEquals(expected_arr, intArray.toString());
     }
     
     @Test

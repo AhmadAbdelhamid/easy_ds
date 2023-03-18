@@ -1,12 +1,9 @@
 package org.example.data_structures.dynamic_arrays.int_array;
 
-import java.util.Arrays;
-
 public class IntArrayImpl implements IntArray {
     
     private static final int DEFAULT_CAPACITY = 8;
-    Integer[] array;
-    
+    Integer[] array = {0}; //init array with zeros
     /**
      * @param [length] refers to the number of elements that are currently stored in the array.
      * It represents the size of the array in terms of the number of elements it currently holds.
@@ -70,20 +67,31 @@ public class IntArrayImpl implements IntArray {
     }
     
     @Override
-    public void add(int element) {
-        if (length == capacity) {
-            capacity *= 2; //double the size
-            copyArray();
+    public void insert(int index, int element) {
+        Integer[] new_array = new Integer[length + 1];
+        for (int i = 0, j = 0; i < length; i++, j++) {
+            if (i == index) {
+                new_array[j] = element;
+                j++;
+            }
+            new_array[j] = array[i];
         }
-        array[length++] = element;
+        capacity = ++length;
+        array = new_array;
     }
     
-    private void copyArray() {
-        Integer[] new_array = new Integer[capacity];
-        for (int i = 0; i < length; i++) {
-            new_array[i] = array[i];
+    @Override
+    public void add(int element) {
+        if (length == capacity) {
+            
+            capacity *= 2; //double the size
+            Integer[] new_array = new Integer[capacity];
+            for (int i = 0; i < length; i++) {
+                new_array[i] = array[i];
+            }
+            array = new_array;
         }
-        array = new_array;
+        array[length++] = element;
     }
     
     @Override
@@ -93,13 +101,14 @@ public class IntArrayImpl implements IntArray {
         Integer[] new_array = new Integer[length - 1]; // new_array size will be less than array size by one
         for (int i = 0, j = 0; i < length; i++, j++) {
             if (i == index)
-                j--; //skip for new array to replace removed element with next element
+                //skip for new_array to replace removed element with next element,
+                //by making new_array behind array each time item is removed
+                j--; //note at first iteration j= -1 will be j= 0 after first iteration when index= 0; i= 1;
             else
                 new_array[j] = array[i];
         }
+        capacity = --length;//update capacity & length
         array = new_array;
-        capacity = --length;
-        
         return removedElement;
     }
     
@@ -116,7 +125,7 @@ public class IntArrayImpl implements IntArray {
     
     @Override
     public void clear() {
-        for (int i = 0; i < length/*length or capacity*/; i++) {
+        for (int i = 0; i < length; i++) {
             array[i] = null;
         }
         length = 0;
